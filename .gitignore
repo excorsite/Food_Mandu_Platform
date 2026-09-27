@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+Frontend/node_modules/
+Backend/node_modules/
+.pnp/
+.pnp.js
+
+# Environment variables - NEVER commit secrets
+.env
+.env.local
+.env.*.local
+Backend/.env
+Frontend/.env.local
+Frontend/.env
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+Frontend/dist/
+Frontend/build/
+
+# Uploads & user generated
+Backend/uploads/
+uploads/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.sw?
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
+.tmp/
