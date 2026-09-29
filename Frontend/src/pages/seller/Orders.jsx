@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import client from "../../api/client";
 import { API_ENDPOINTS } from "../../api/config";
+import useOrderRealtime from "../../hooks/useOrderRealtime";
 import toast from "react-hot-toast";
 
 export default function SellerOrders() {
+  useOrderRealtime("admin-orders");
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["admin-orders"],

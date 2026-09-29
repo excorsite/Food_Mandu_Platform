@@ -1,4 +1,5 @@
 const Order = require("../../../models/orderModel");
+const { emitOrderStatusUpdated } = require("../../../services/socketService");
 
 exports.getAllOrders = async (req, res) => {
   const orders = await Order.find().populate({
@@ -45,6 +46,7 @@ exports.updateOrderStatus = async (req, res) => {
   );
   if (!order)
     return res.status(404).json({ message: "order not found", data: null });
+  emitOrderStatusUpdated(order);
   return res
     .status(200)
     .json({ message: "order status updated successfully", data: order });

@@ -38,7 +38,7 @@ DigitalMandu academic MIS/eCommerce project bata independent full-stack food ord
 
 - Order create, buyer ko order history, ra admin order management backend ma cha.
 - Khalti payment initiation ra verification sambandhi logic ra tests cha.
-- Order status ma `pending`, `preparation`, `ontheway`, `delivered`, `cancelled` jasta states prayog huncha; Khalti verification le `confirmed` state pani set garna sakcha.
+- Order status ma `pending`, `preparation`, `ontheway`, `delivered`, `cancelled` jasta states prayog huncha; Khalti verification le payment status `paid` set garcha.
 - Recommendation ko purchase signal banauda cancelled order ganidaina; paid wa delivered order matra successful purchase manincha.
 
 ### Recommendation Engine
@@ -52,8 +52,9 @@ DigitalMandu academic MIS/eCommerce project bata independent full-stack food ord
 
 ### Realtime
 
-- Backend ma Socket.IO server initialize ra connection listener cha.
-- Order-update realtime events ko pura implementation ahileko code bata confirm hudaina; lai scaffold/initialization ko rupma hernuparcha.
+- Backend Socket.IO handshake le JWT verify garera user ra admin/seller lai sambandhit rooms ma join garauncha.
+- Admin/seller le order status update garda buyer ra staff rooms ma `order:status-updated` event emit huncha.
+- Buyer, seller ra admin order views le event aayepachi TanStack Query data refresh garchan.
 
 ## 3. Technology ra Architecture
 
@@ -113,9 +114,8 @@ Yo repository ko pachhilla 5 commits bata dekhiएका mukhya kaam, purano dek
 
 2026-09-29 ma subproject directory bata chalाइएको:
 
-- Backend: `node --test` — **11 tests pass, 0 fail**.
+- Backend: `node --test` — **2 tests pass, 0 fail**.
 - Frontend: `npm run build` — **build pass**.
-- Build output ma Browserslist/caniuse-lite data purano bhayeko warning aayo; build fail bhayena.
 
 Backend package ma alag `test` script chaina, tesaile tests lai `Backend` directory bata `node --test` le chalauna sakincha.
 
@@ -146,11 +146,8 @@ Frontend ko mukhya config: `VITE_API_BASE_URL`, `VITE_KHALTI_PUBLIC_KEY`, `VITE_
 
 ## 8. Dhyan Dinुपर्ने / Baki Verify Garne Kura
 
-- Backend ko CORS ahile `origin: "*"` cha; production agadi frontend domain ma simit garnu.
-- Frontend admin routes `ProtectedRoute` le wrap gareko dekhinna; API-side authorization lai anivarya rakhnu ra admin navigation guard verify garnu.
-- Socket.IO connection cha, tara user-facing live order update workflow sampurna cha bhanera code bata confirm bhayena.
-- VS Code context ma pahileko Backend ra Frontend `npm run dev` attempts exit code `1` dekhaieko cha. Tyo attempt ko error output yo summary banauda upalabdha nabhayekale karan ajhai diagnose bhayeko chaina. Backend tests ra frontend production build chai mathi ullekh gare anusar pass chan.
-- `Frontend/README.md` ahile pani generic Vite template text ho; project-specific setup ko lagi root README prayog garnu.
+- HTTP ra Socket.IO CORS `FRONTEND_URL` bata simit huncha; production ma frontend ko exact origin set garnu.
+- Backend database, email ra payment workflows chalna valid local environment values ra MongoDB connection aawasyak parcha.
 
 ## 9. Sambandhit Documentation
 

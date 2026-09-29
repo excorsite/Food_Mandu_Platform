@@ -33,11 +33,11 @@ As a result, DigitalMandu Platform is not simply a refreshed version of an older
 
 ## Stack
 
-| Layer | Tech |
-|-------|------|
-| Frontend | React 19 + Vite 6, React Router 7, Zustand 4, TanStack Query 5, Tailwind 4, Axios, React Hot Toast, Lucide |
-| Backend | Node.js + Express 4, Mongoose 8, JWT, bcryptjs, Multer, Nodemailer, Socket.IO |
-| Database | MongoDB (local `digitalmandu` / Atlas) |
+| Layer    | Tech                                                                                                   |
+| -------- | ------------------------------------------------------------------------------------------------------ |
+| Frontend | React 19 + Vite 6, React Router 7, Zustand 4, TanStack Query 5, Tailwind CSS 3, Axios, React Hot Toast |
+| Backend  | Node.js + Express 4, Mongoose 8, JWT, bcryptjs, Multer, Nodemailer, Socket.IO                          |
+| Database | MongoDB (local `digitalmandu` / Atlas)                                                                 |
 
 ## Monorepo Layout
 
@@ -67,7 +67,7 @@ Food-Order/
 - **Buyer:** browse products, cart, checkout (COD / Khalti), order history, profile, reviews.
 - **Seller/Admin:** product CRUD (multer upload), order management (`/getOrdersAsAnAdmin`, `/updateOrdersAsAnAdmin`), user management.
 - **Auth:** JWT via `user_auth_token` header, role guard (`customer` / `admin`), OTP flow.
-- **Realtime:** Socket.IO scaffold for order updates.
+- **Realtime:** Authenticated Socket.IO events refresh buyer, seller, and admin order views when order status changes.
 
 ## Quick Start
 
@@ -89,11 +89,11 @@ npm run dev            # http://localhost:3000
 
 Seeded accounts:
 
-| Email | Password | Role |
-|-------|----------|------|
-| admin@digitalmandu.local | Admin@123 | admin |
+| Email                       | Password     | Role     |
+| --------------------------- | ------------ | -------- |
+| admin@digitalmandu.local    | Admin@123    | admin    |
 | customer@digitalmandu.local | Customer@123 | customer |
-| seller@digitalmandu.local | Seller@123 | customer |
+| seller@digitalmandu.local   | Seller@123   | seller   |
 
 `Backend/.env` for local dev:
 
@@ -133,38 +133,38 @@ Root + subproject `.gitignore` already cover `node_modules/`, `.env*`, `dist/`, 
 
 Base: `http://localhost:3000/api`
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | /register | no | Register |
-| POST | /login | no | Login -> token |
-| GET | /products | no | List products |
-| GET | /products/:id | no | Product detail |
-| POST | /add_product | admin | Create product (multipart) |
-| PATCH/DELETE | /products/:id | admin | Update/delete |
-| GET/POST | /cart | customer | Cart |
-| POST | /orders | customer | Place order |
-| GET | /orders | customer | My orders |
-| GET | /getOrdersAsAnAdmin | admin | All orders |
-| POST | /payment/khalti/init | customer | Khalti init |
-| GET | /profile/:id | auth | Profile |
+| Method       | Path                 | Auth     | Description                |
+| ------------ | -------------------- | -------- | -------------------------- |
+| POST         | /register            | no       | Register                   |
+| POST         | /login               | no       | Login -> token             |
+| GET          | /products            | no       | List products              |
+| GET          | /products/:id        | no       | Product detail             |
+| POST         | /add_product         | admin    | Create product (multipart) |
+| PATCH/DELETE | /products/:id        | admin    | Update/delete              |
+| GET/POST     | /cart                | customer | Cart                       |
+| POST         | /orders              | customer | Place order                |
+| GET          | /orders              | customer | My orders                  |
+| GET          | /getOrdersAsAnAdmin  | admin    | All orders                 |
+| POST         | /payment/khalti/init | customer | Khalti init                |
+| GET          | /profile/:id         | auth     | Profile                    |
 
 Auth header: `user_auth_token: <jwt>` (see `Backend/middlewares/isAuthenticated.js`).
 
 ## Scripts
 
-| Location | Command | Purpose |
-|----------|---------|---------|
-| Backend | `npm run dev` | nodemon |
-| Backend | `npm run seed` | seed local DB |
-| Backend | `npm run seed:reset` | drop & reseed |
-| Frontend | `npm run dev` | Vite dev |
-| Frontend | `npm run build` | Vite build |
+| Location | Command              | Purpose       |
+| -------- | -------------------- | ------------- |
+| Backend  | `npm run dev`        | nodemon       |
+| Backend  | `npm run seed`       | seed local DB |
+| Backend  | `npm run seed:reset` | drop & reseed |
+| Frontend | `npm run dev`        | Vite dev      |
+| Frontend | `npm run build`      | Vite build    |
 
 ## Security Notes
 
 - `.env` files are gitignored at root, Backend and Frontend. Rotate any previously exposed Atlas URI / Gmail app password.
 - `SECRET_KEY` must be a strong random string in production.
-- CORS is currently `origin: *` — restrict to `FRONTEND_URL` before production.
+- HTTP and Socket.IO CORS use `FRONTEND_URL`; configure it to the exact frontend origin in production.
 - Uploaded files in `Backend/uploads/` are gitignored and served statically.
 
 ## Cleanup Performed (2026-09)

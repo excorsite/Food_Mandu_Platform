@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 const { connectDatabase } = require("./database/database");
+const User = require("./models/userModel");
 const app = express();
 
 // requiring the registeruser and login user from auth controller from controller file
@@ -22,8 +23,10 @@ connectDatabase(mongoUri).catch((error) =>
 );
 
 const { Server } = require("socket.io");
+const jwt = require("jsonwebtoken");
 //requirieng cors for fixing cors related error
 const cors = require("cors");
+const { setSocketIo } = require("./services/socketService");
 
 //importing the authRoute.js in this file to work with routes
 const admin_user_route = require("./routes/admin/adminUserRoute");
@@ -81,16 +84,34 @@ const server = app.listen(PORT, () => {
   console.log("Server is running at: http://localhost:" + PORT);
 });
 
-// passing our server address to socket
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  },
+});
+setSocketIo(io);
 
-io.on("connection", (socket) => {
-  console.log("connected to a socket");
-  // You can add more event listeners here
-  console.log(server);
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth?.token;
+    if (!token) return next(new Error("Unauthorized"));
+
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const user = await User.findById(decoded.id).select("_id role");
+    if (!user) return next(new Error("Unauthorized"));
+
+    socket.data.userId = user.id;
+    socket.data.role = user.role;
+    return next();
+  } catch {
+    return next(new Error("Unauthorized"));
+  }
 });
 
-const getSocketIo = () => {
-  return io;
-};
-module.exports.getSocketIo = getSocketIo;
+io.on("connection", (socket) => {
+  socket.join(`user:${socket.data.userId}`);
+  if (["admin", "seller"].includes(socket.data.role)) {
+    socket.join("staff:orders");
+  }
+});
