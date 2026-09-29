@@ -51,7 +51,7 @@ exports.getProductReview = async (req, res) => {
     });
   }
 
-  const reviews = await Review.find({ productId }).populate("userId");
+  const reviews = await Review.find({ productId }).populate("userId", "name");
   res.status(200).json({
     message: "Reviews fetched successfully",
     data: reviews,
@@ -91,7 +91,7 @@ exports.getReviewsByAUser = async (req, res) => {
 //getting review done for specific product by all user not only actively browsing user
 exports.getReviewsByProduct = async (req, res) => {
   const productId = req.params.productId;
-  const reviews = await Review.find({ productId }).populate("userId");
+  const reviews = await Review.find({ productId }).populate("userId", "name");
   res.status(200).json({
     message: "Reviews fetched successfully",
     data: reviews,
@@ -105,7 +105,7 @@ exports.getReviewsByProductAndUser = async (req, res) => {
   // $and operator making sure both id given matches
   const reviews = await Review.find({
     $and: [{ productId }, { userId }],
-  }).populate("userId");
+  }).populate("userId", "name");
   res.status(200).json({
     message: "Reviews fetched successfully",
     data: reviews,
